@@ -41,7 +41,7 @@ def scan_segy_file(file_path: str) -> Dict[str, Any]:
                 "ntrc": ntrc,
                 "nsp": nsp,
                 "dt": dt,
-                "header": "cdp",  # Keeping as requested
+                "header": "sp",  # Keeping as requested
                 "size": get_file_size_mb(file_path),
                 # "inline_range": inline_range,
                 # "xline_range": xline_range,
@@ -57,7 +57,7 @@ def scan_segy_file(file_path: str) -> Dict[str, Any]:
             "ntrc": 0,
             "nsp": 0,
             "dt": 0,
-            "header": "cdp",
+            "header": "sp",
             "size": round(get_file_size_mb(file_path), 1),
             "error": str(e)
         }

@@ -1,10 +1,14 @@
 const APP_BASE_URL = import.meta.env.VITE_APP_BASE_URL
-const APP_URL_V1 = APP_BASE_URL + "/api/v1"
+const APP_URL_V1 = APP_BASE_URL + "/api"
 
 export const AppApi = {
   auth: {
     login: APP_BASE_URL + "/api/auth/sign-in-email",
   },
+  seismicData: {
+    segyList: APP_URL_V1 + "/seismic-data/segy/list",
+    segyRead: APP_URL_V1 + "/seismic-data/segy/read",
+  }
 }
 
 export const AppRoute = {

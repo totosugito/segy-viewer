@@ -29,8 +29,8 @@ class SegyFileRequest(BaseModel):
 
 class SegyResponse(BaseModel):
     info: Dict[str, Any]
-    data: List[List[float]]
-    headers: Optional[List[Any]] = None  # Optional: header values if requested
+    data: List[List[Optional[float]]]  # Allow None values in trace data
+    headers: Optional[List[Optional[Any]]] = None  # Optional: header values if requested, allowing None values
 
 @router.get("/list", response_model=List[Dict[str, Any]])
 async def get_segy_list():
@@ -194,13 +194,18 @@ async def read_segy_file(request: SegyFileRequest):
                 # Format each value to 5 significant digits
                 formatted_trace = []
                 for value in sampled_data:
-                    if value == 0:
+                    if np.isnan(value) or value is None:
+                        formatted_trace.append(None)
+                    elif value == 0:
                         formatted_trace.append(0.0)
                     else:
                         # Format to 5 significant digits
                         formatted_value = float(f"{value:.4g}")
                         formatted_trace.append(formatted_value)
-                data.append(formatted_trace)
+                        
+                # Only include trace if it has at least one non-null value
+                if any(val is not None for val in formatted_trace):
+                    data.append(formatted_trace)
             
             # Prepare response
             response = {

@@ -29,8 +29,8 @@ class LasFileRequest(BaseModel):
 
 class LasResponse(BaseModel):
     info: Dict[str, Any]
-    data: Dict[str, List[float]]  # Dictionary with curve names as keys
-    headers: Optional[List[Any]] = None  # Optional: depth/time values
+    data: Dict[str, List[Optional[float]]]  # Dictionary with curve names as keys, allowing None values
+    headers: Optional[List[Optional[float]]] = None  # Optional: depth/time values, allowing None values
 
 @router.get("/list", response_model=List[Dict[str, Any]])
 async def get_las_list():
@@ -192,7 +192,9 @@ async def read_las_file(request: LasFileRequest):
                         formatted_value = float(f"{value:.4g}")
                         formatted_data.append(formatted_value)
                 
-                data[curve_name] = formatted_data
+                # Only include curve if it has at least one non-null value
+                if any(val is not None for val in formatted_data):
+                    data[curve_name] = formatted_data
         
         # Format index values (depth/time) for headers
         headers = []
