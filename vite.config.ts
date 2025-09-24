@@ -1,28 +1,41 @@
 import { defineConfig } from 'vite'
-import viteReact from '@vitejs/plugin-react'
-import tailwindcss from '@tailwindcss/vite'
-
+import react from '@vitejs/plugin-react'
 import { TanStackRouterVite } from '@tanstack/router-plugin/vite'
-import { resolve } from 'node:path'
+import tailwindcss from '@tailwindcss/vite';
+import path from 'path';
 
-// https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
-    TanStackRouterVite({ autoCodeSplitting: true }),
-    viteReact(),
+    TanStackRouterVite({
+      target: 'react',
+      autoCodeSplitting: true,
+    }),
+    react(),
     tailwindcss(),
   ],
-  test: {
-    globals: true,
-    environment: 'jsdom',
-  },
-   server: {
+  server: {
     host: '127.0.0.1',
-    port: 5273,
+    port: 8050,
   },
   resolve: {
-    alias: {
-      '@': resolve(__dirname, './src'),
+    alias: [
+      {
+        find: '@',
+        replacement: `${path.resolve(__dirname, 'src')}/`,
+      },
+    ],
+    extensions: ['.mjs', '.js', '.ts', '.jsx', '.tsx', '.json', '.scss'],
+  },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          // Split node_modules into separate chunks
+          if (id.includes('node_modules')) {
+            return id.toString().split('node_modules/')[1].split('/')[0];
+          }
+        },
+      },
     },
   },
 })

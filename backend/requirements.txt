@@ -1,0 +1,6 @@
+fastapi[standard]
+pandas==2.3.2
+segyio==1.9.13
+lasio==0.32
+uvicorn
+python-dotenv
