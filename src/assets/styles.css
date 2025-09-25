@@ -194,3 +194,7 @@ html {
   border: none !important;
   padding: 0 !important;
 }
+
+.cardStyles {
+  @apply bg-gray-50 border-gray-200 dark:bg-gray-900/50 dark:border-gray-700;
+}

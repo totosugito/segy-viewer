@@ -44,6 +44,8 @@ interface LChartSeismicProps {
   colormap: ColorMapData;
   className?: string;
   perc?: { min: number, max: number };  // percentage of min and max values to be used for colormap
+  minValue?: number;  // precomputed min value
+  maxValue?: number;  // precomputed max value
 }
 
 export const LChartSeismic: React.FC<LChartSeismicProps> = ({
@@ -52,6 +54,8 @@ export const LChartSeismic: React.FC<LChartSeismicProps> = ({
   colormap,
   className,
   perc={min: 95, max: 95},
+  minValue,
+  maxValue,
 }) => {
   const chartRef = useRef<ChartXY | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -90,24 +94,36 @@ export const LChartSeismic: React.FC<LChartSeismicProps> = ({
 
       // Create chartXY
       const chart = lightningChart().ChartXY({ container: containerRef.current })
-        .setTitleFillStyle(grColor.default)
+      .setTitleMarginTop(-30)
+        // .setTitleFillStyle(grColor.default)
         .setBackgroundFillStyle(grColor.background)
-        .setTitle(dataProps.title)
-        .setTitleFont((font: any) => font
-          .setSize(20) // Large font size for title
-          .setWeight('bold') // Bold font weight
-        );
+        // .setTitle(dataProps.title)
+        // .setTitleFont((font: any) => font
+        //   .setSize(20) // Large font size for title
+        //   .setWeight('bold') // Bold font weight
+        // );
       chartRef.current = chart;
 
-      // Calculate min and max values from the actual data
-      let minValue = get2dMinData(points);
-      let maxValue = get2dMaxData(points);
-      const dmin_ = Math.abs(minValue * (perc?.min ?? 10) / 100.0);
-      const dmax_ = Math.abs(maxValue * (perc?.max ?? 10) / 100.0);
-      minValue = minValue + dmin_;
-      maxValue = maxValue - dmax_;
+      // Calculate min and max values from the actual data or use precomputed values
+      let minValueCalculated: number;
+      let maxValueCalculated: number;
+      
+      if (minValue !== undefined && maxValue !== undefined) {
+        // Use precomputed values for better performance
+        minValueCalculated = minValue;
+        maxValueCalculated = maxValue;
+      } else {
+        // Fallback to computing values if not provided
+        minValueCalculated = get2dMinData(points);
+        maxValueCalculated = get2dMaxData(points);
+      }
+      
+      const dmin_ = Math.abs(minValueCalculated * (perc?.min ?? 10) / 100.0);
+      const dmax_ = Math.abs(maxValueCalculated * (perc?.max ?? 10) / 100.0);
+      minValueCalculated = minValueCalculated + dmin_;
+      maxValueCalculated = maxValueCalculated - dmax_;
 
-      let newPalette = new PalettedFill({ lut: getLcColormap(colormap, minValue, maxValue) });
+      let newPalette = new PalettedFill({ lut: getLcColormap(colormap, minValueCalculated, maxValueCalculated) });
 
       // Create custom X-axis positioned at the top using actual data values
       const customXAxis = chart.addAxisX({ opposite: true }) // Position at top

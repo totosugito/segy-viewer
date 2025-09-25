@@ -1,10 +1,17 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useMemo } from 'react'
 import { fetchApi } from '@/lib/fetch-api'
 import { AppApi } from '@/constants/api'
-import { LChartSeismic } from '@/components/segy'
-import { Card, CardContent } from '@/components/ui/card'
-import { SkeLoading } from '@/components/custom/skeleton'
+import { get2dMinData, get2dMaxData } from '@/components/segy/utils/colormap'
+import { 
+  SegyLoadingState,
+  SegyErrorState,
+  SegyNoDataState,
+  SegyFileStats,
+  SegyFileInfo,
+  SegyChartViewer,
+  SegyViewerHeader
+} from '@/components/pages/seismic/segy'
 
 // Types for SEGY data
 interface SegyData {
@@ -42,6 +49,18 @@ function App() {
   const [segyData, setSegyData] = useState<SegyData | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [loadingProgress, setLoadingProgress] = useState(0)
+
+  // Compute min and max values once using useMemo for performance
+  const { minValue, maxValue } = useMemo(() => {
+    if (!segyData?.data || segyData.data.length === 0) {
+      return { minValue: 0, maxValue: 0 }
+    }
+    return {
+      minValue: get2dMinData(segyData.data),
+      maxValue: get2dMaxData(segyData.data)
+    }
+  }, [segyData?.data])
 
   // Fetch SEGY data from API
   useEffect(() => {
@@ -53,8 +72,20 @@ function App() {
     const loadSegyData = async () => {
       setIsLoading(true)
       setError(null)
+      setLoadingProgress(0)
       
       try {
+        // Simulate loading progress
+        const progressInterval = setInterval(() => {
+          setLoadingProgress(prev => {
+            if (prev >= 90) {
+              clearInterval(progressInterval)
+              return prev
+            }
+            return prev + Math.random() * 10
+          })
+        }, 100)
+
         const requestBody = {
           filename,
           ...(maxNtrc && { maxNtrc }),
@@ -68,7 +99,14 @@ function App() {
           body: requestBody,
         })
 
-        setSegyData(response)
+        clearInterval(progressInterval)
+        setLoadingProgress(100)
+        
+        // Small delay to show 100% progress
+        setTimeout(() => {
+          setSegyData(response)
+        }, 200)
+
       } catch (err: any) {
         setError(err.message || 'Failed to load SEGY data')
       } finally {
@@ -81,77 +119,36 @@ function App() {
 
   // Loading state
   if (isLoading) {
-    return (
-      <div className="flex items-center justify-center h-full">
-        <Card className="p-6">
-          <CardContent>
-            <SkeLoading loading={true} />
-            <p className="text-center mt-4">Loading SEGY file: {filename}</p>
-          </CardContent>
-        </Card>
-      </div>
-    )
+    return <SegyLoadingState filename={filename || ''} loadingProgress={loadingProgress} />
   }
 
   // Error state
   if (error) {
-    return (
-      <div className="flex items-center justify-center h-full">
-        <Card className="p-6">
-          <CardContent>
-            <div className="text-center text-red-500">
-              <h2 className="text-xl font-bold mb-2">Error Loading SEGY File</h2>
-              <p>{error}</p>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-    )
+    return <SegyErrorState filename={filename} error={error} />
   }
 
   // No data state
   if (!segyData) {
-    return (
-      <div className="flex items-center justify-center h-full">
-        <Card className="p-6">
-          <CardContent>
-            <div className="text-center">
-              <h2 className="text-xl font-bold mb-2">No SEGY File Selected</h2>
-              <p>Please select a SEGY file from the file list.</p>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-    )
-  }
-
-  // Prepare data for the chart component
-  const dataProps = {
-    title: segyData.info.name,
-    ntrc: segyData.info.ntrc,
-    nsp: segyData.info.nsp / (dtMultiplier ?? 1),
-    dt: segyData.info.dt,
-    xAxis: {
-      label: segyData.info.header.toUpperCase(),
-      data: segyData.headers || Array.from({ length: segyData.info.ntrc }, (_, i) => i + 1)
-    },
-    yAxis: {
-      label: "Time (ms)",
-      data: Array.from({ length: segyData.info.nsp }, (_, i) => (i + 1) * (segyData.info.dt * (dtMultiplier ?? 1)))
-    }
-  }
-
-  const colormap = {
-    id: 2, // Seismic colormap
-    reverse: false
+    return <SegyNoDataState />
   }
 
   return (
-    <div className="w-full h-full">
-      <LChartSeismic
-        dataProps={dataProps}
-        points={segyData.data}
-        colormap={colormap}
+    <div className="container mx-auto space-y-6">
+      {/* Header */}
+      <SegyViewerHeader />
+
+      {/* File Information Stats */}
+      <SegyFileStats segyData={segyData} />
+
+      {/* File Details */}
+      <SegyFileInfo segyData={segyData} maxNtrc={maxNtrc} />
+
+      {/* Seismic Chart */}
+      <SegyChartViewer 
+        segyData={segyData} 
+        dtMultiplier={dtMultiplier} 
+        minValue={minValue}
+        maxValue={maxValue}
       />
     </div>
   )

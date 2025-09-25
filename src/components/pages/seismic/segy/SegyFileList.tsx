@@ -39,7 +39,12 @@ export function SegyFileList({ onFileSelect }: SegyFileListProps) {
       cell: ({ row }) => (
         <div className="flex items-center space-x-2">
           <FileText className="h-4 w-4 text-blue-500" />
-          <span className="font-medium">{row.getValue('name')}</span>
+          <Link
+            to={AppRoute.dataManagement.segyViewer.url}
+            search={{ filename: row.original.name, dtMultiplier: row.original.dtMultiplier, header: row.original.header }}
+          >
+            <span className="font-medium hover:text-primary hover:underline">{row.getValue('name')}</span>
+          </Link>
         </div>
       ),
     },
@@ -84,7 +89,7 @@ export function SegyFileList({ onFileSelect }: SegyFileListProps) {
       header: 'File Size',
       cell: ({ row }) => (
         <div>
-        {formatFileSize(row.getValue('size'))}
+          {formatFileSize(row.getValue('size'))}
         </div>
       ),
     },
@@ -103,7 +108,7 @@ export function SegyFileList({ onFileSelect }: SegyFileListProps) {
               search={{ filename: row.original.name, dtMultiplier: row.original.dtMultiplier, header: row.original.header }}
             >
               <Eye className="h-4 w-4 mr-1" /> View
-              
+
             </Link>
           </Button>
         </div>
@@ -148,7 +153,7 @@ export function SegyFileList({ onFileSelect }: SegyFileListProps) {
       </div>
 
       {/* Search */}
-      <Card>
+      <Card className='cardStyles'>
         <CardHeader>
           <CardTitle>Search Files</CardTitle>
           <CardDescription>
@@ -169,7 +174,7 @@ export function SegyFileList({ onFileSelect }: SegyFileListProps) {
       </Card>
 
       {/* Files Table */}
-      <Card>
+      <Card className='cardStyles'>
         <CardHeader>
           <CardTitle>
             Available Files ({filteredFiles.length})
