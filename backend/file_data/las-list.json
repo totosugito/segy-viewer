@@ -1,0 +1,79 @@
+[
+    {
+        "name": "CP_Kronos1_Logs_depth.las",
+        "size": 5418581,
+        "well_name": "Unknown",
+        "api_number": null,
+        "num_curves": 11,
+        "num_data_points": 34718,
+        "curve_names": [
+            "DEPT",
+            "ADJS:1",
+            "ADJS:2",
+            "CALI",
+            "DTCO:1",
+            "DTCO:2",
+            "DTSM",
+            "GR",
+            "NPHI",
+            "RHOB",
+            "RESD"
+        ],
+        "version": null,
+        "wrap": null
+    },
+    {
+        "name": "CP_Kronos1_Logs_time.las",
+        "size": 851161,
+        "well_name": "Unknown",
+        "api_number": null,
+        "num_curves": 15,
+        "num_data_points": 4001,
+        "curve_names": [
+            "TIME",
+            "AIMP",
+            "ATTE",
+            "CALI",
+            "DTCO",
+            "DTSM",
+            "GR",
+            "MULT",
+            "MUON",
+            "NPHI",
+            "PRIM",
+            "REFL",
+            "RHOB",
+            "RESD",
+            "SVEL"
+        ],
+        "version": null,
+        "wrap": null
+    },
+    {
+        "name": "CP_Kronos1_Synthetics.las",
+        "size": 851592,
+        "well_name": "Unknown",
+        "api_number": null,
+        "num_curves": 15,
+        "num_data_points": 4001,
+        "curve_names": [
+            "TIME",
+            "SMUL:1",
+            "SMUL:2",
+            "SMUL:3",
+            "SMUO:1",
+            "SMUO:2",
+            "SMUO:3",
+            "SPRM:1",
+            "SPRM:2",
+            "SPRM:3",
+            "SREF:1",
+            "SREF:2",
+            "SREF:3",
+            "VSPS:1",
+            "VSPS:2"
+        ],
+        "version": null,
+        "wrap": null
+    }
+]

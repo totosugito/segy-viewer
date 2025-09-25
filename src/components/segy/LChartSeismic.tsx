@@ -43,13 +43,15 @@ interface LChartSeismicProps {
   points: number[][];
   colormap: ColorMapData;
   className?: string;
+  perc?: { min: number, max: number };  // percentage of min and max values to be used for colormap
 }
 
 export const LChartSeismic: React.FC<LChartSeismicProps> = ({
   dataProps,
   points,
   colormap,
-  className
+  className,
+  perc={min: 95, max: 95},
 }) => {
   const chartRef = useRef<ChartXY | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -98,9 +100,13 @@ export const LChartSeismic: React.FC<LChartSeismicProps> = ({
       chartRef.current = chart;
 
       // Calculate min and max values from the actual data
-      const minValue = get2dMinData(points);
-      const maxValue = get2dMaxData(points);
-      
+      let minValue = get2dMinData(points);
+      let maxValue = get2dMaxData(points);
+      const dmin_ = Math.abs(minValue * (perc?.min ?? 10) / 100.0);
+      const dmax_ = Math.abs(maxValue * (perc?.max ?? 10) / 100.0);
+      minValue = minValue + dmin_;
+      maxValue = maxValue - dmax_;
+
       let newPalette = new PalettedFill({ lut: getLcColormap(colormap, minValue, maxValue) });
 
       // Create custom X-axis positioned at the top using actual data values
@@ -167,7 +173,7 @@ export const LChartSeismic: React.FC<LChartSeismicProps> = ({
           return builder
             .addRow(formatRow(dataProps.xAxis.label, dataPoint.x ? Math.round(dataPoint.x).toString() : 'N/A'))
             .addRow(formatRow(dataProps.yAxis.label, dataPoint.y ? Math.round(dataPoint.y).toString() : 'N/A'))
-            .addRow(formatRow('Amplitude', dataPoint.intensity ? dataPoint.intensity.toFixed(2) : 'N/A'))
+            .addRow(formatRow('Value', dataPoint.intensity ? dataPoint.intensity.toFixed(2) : 'N/A'))
         });
 
       // Dispose default axes

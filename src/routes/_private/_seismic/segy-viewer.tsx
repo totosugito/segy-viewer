@@ -132,7 +132,7 @@ function App() {
     nsp: segyData.info.nsp / (dtMultiplier ?? 1),
     dt: segyData.info.dt,
     xAxis: {
-      label: "Trace Number",
+      label: segyData.info.header.toUpperCase(),
       data: segyData.headers || Array.from({ length: segyData.info.ntrc }, (_, i) => i + 1)
     },
     yAxis: {

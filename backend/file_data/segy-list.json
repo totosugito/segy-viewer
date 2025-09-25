@@ -1,0 +1,22 @@
+[
+    {
+        "name": "COP_Pharos-1_zstk.sgy",
+        "ntrc": 196,
+        "nsp": 5000,
+        "dt": 1.0,
+        "header": "sp",
+        "size": 3970640,
+        "format": "4-byte IBM float",
+        "dtMultiplier": 4
+    },
+    {
+        "name": "CP_Kronos1_zstk.sgy",
+        "ntrc": 325,
+        "nsp": 5000,
+        "dt": 1.0,
+        "header": "sp",
+        "size": 6581600,
+        "format": "4-byte IBM float",
+        "dtMultiplier": 4
+    }
+]
