@@ -1,1 +1,0 @@
-export {LChartSeismic} from './LChartSeismic';

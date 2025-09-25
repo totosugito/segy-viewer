@@ -1,13 +1,13 @@
 import React, { useState } from 'react'
-import { SegyFileList } from './SegyFileList'
-import { type SegyFileInfo } from '@/service/segy-service'
 import { Button } from '@/components/ui/button'
 import { ArrowLeft } from 'lucide-react'
+import { LasFileList } from './LasFileList'
+import { type LasFileInfo } from '@/service/las-service'
 
-export function SegyListPage() {
-    const [selectedFile, setSelectedFile] = useState<SegyFileInfo | null>(null)
+export function LasListPage() {
+    const [selectedFile, setSelectedFile] = useState<LasFileInfo | null>(null)
 
-    const handleFileSelect = (file: SegyFileInfo) => {
+    const handleFileSelect = (file: LasFileInfo) => {
         setSelectedFile(file)
     }
 
@@ -31,7 +31,7 @@ export function SegyListPage() {
                 </div>
             ) : (
                 /* File List */
-                <SegyFileList onFileSelect={handleFileSelect} />
+                <LasFileList onFileSelect={handleFileSelect} />
             )}
         </div>
     )

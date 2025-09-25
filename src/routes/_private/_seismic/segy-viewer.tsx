@@ -2,7 +2,7 @@ import { createFileRoute } from '@tanstack/react-router'
 import { useEffect, useState, useMemo } from 'react'
 import { fetchApi } from '@/lib/fetch-api'
 import { AppApi } from '@/constants/api'
-import { get2dMinData, get2dMaxData } from '@/components/segy/utils/colormap'
+import { get2dMinData, get2dMaxData } from '@/components/seismic/utils/colormap'
 import { 
   SegyLoadingState,
   SegyErrorState,

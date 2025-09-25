@@ -5,9 +5,9 @@ import { Switch } from '@/components/ui/switch'
 import { Label } from '@/components/ui/label'
 import { Slider } from '@/components/ui/slider'
 import { Button } from '@/components/ui/button'
-import { LChartSeismic } from '@/components/segy'
+import { LChartSeismic } from '@/components/seismic'
 import { Activity, Palette, RotateCcw } from 'lucide-react'
-import { getColormapName, getColormapAsset } from '@/components/segy/utils/colormap'
+import { getColormapName, getColormapAsset } from '@/components/seismic/utils/colormap'
 
 interface SegyData {
     info: {

@@ -24,11 +24,11 @@ export const AdminNav = {
       permitUser: true,
     },
     {
-      title: "RAG Database",
+      title: "RAG Files",
       items: [
         {
-          title: "Wells",
-          url: AppRoute.dataManagement.segyList.url,
+          title: "File List",
+          url: AppRoute.ragFiles.ragFileList.url,
           icon: AiOutlineFileSearch,
         },
       ]
