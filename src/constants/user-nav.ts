@@ -1,11 +1,15 @@
-import {TbFileReport} from "react-icons/tb";
 import {AiOutlineFileSearch} from "react-icons/ai";
 import {TbFileSpark} from "react-icons/tb";
 import {AppRoute} from "@/constants/api";
+import {SidebarData} from "@/types/sidebar";
 
 export const AdminNav = {
-  user: {},
-  teams: {},
+  user: {
+    name: 'Admin User',
+    email: 'admin@example.com',
+    avatar: '/path/to/avatar.png'  // Replace with actual avatar path
+  },
+  teams: [],
   navGroups: [
     {
       title: "Data Management",
@@ -20,8 +24,7 @@ export const AdminNav = {
           url: AppRoute.dataManagement.lasList.url,
           icon: TbFileSpark,
         },
-      ],
-      permitUser: true,
+      ]
     },
     {
       title: "RAG Files",

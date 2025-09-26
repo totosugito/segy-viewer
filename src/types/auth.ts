@@ -11,6 +11,8 @@ export type LoginProps = {
 
 export type AuthProps = {
   token?: string | null
+  name?: string;
+  image?: string | null | undefined;
   user: {
     id: string;
     name: string;
